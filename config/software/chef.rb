@@ -16,7 +16,7 @@
 name "chef"
 default_version "master"
 
-source git: "git://github.com/opscode/chef"
+source git: "git://github.com/chef/chef"
 
 relative_path "chef"
 
