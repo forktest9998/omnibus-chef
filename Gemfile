@@ -1,7 +1,8 @@
 source 'https://rubygems.org'
 
-gem 'omnibus', github: 'opscode/omnibus'
-gem 'omnibus-software', github: 'opscode/omnibus-software'
+gem 'omnibus', github: 'chef/omnibus', branch: 'ksubrama/win64'
+gem 'omnibus-software', github: 'chef/omnibus-software', branch: 'ksubrama/win64'
+gem 'mixlib-shellout', github: 'chef/mixlib-shellout', branch: 'ksubrama/win64'
 
 # This development group is installed by default when you run `bundle install`,
 # but if you are using Omnibus in a CI-based infrastructure, you do not need

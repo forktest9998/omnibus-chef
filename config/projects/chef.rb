@@ -17,7 +17,7 @@
 name "chef"
 friendly_name "Chef Client"
 maintainer "Chef Software, Inc. <maintainers@chef.io>"
-homepage "https://www.getchef.com"
+homepage "https://www.chef.io"
 
 build_iteration 1
 build_version do
@@ -50,17 +50,12 @@ end
 # Software does).
 override :cacerts, version: '2014.08.20'
 
-override :bundler,        version: "1.7.2"
-override :ruby,           version: "2.1.4"
+override :bundler,        version: "1.9.4"
+override :ruby,           version: "2.1.6"
+override :'ruby-windows', version: "2.1.6"
+override :'ruby-windows-devkit', version: "4.7.2-20130224-1432"
 ######
-# Ruby 2.1.3 is currently not working on windows due to:
-# https://github.com/ffi/ffi/issues/375
-# Enable below once above issue is fixed.
-# override :'ruby-windows', version: "2.1.3"
-# override :'ruby-windows-devkit', version: "4.7.2-20130224-1151"
-override :'ruby-windows', version: "2.0.0-p451"
-######
-override :rubygems,       version: "2.4.4"
+override :rubygems,       version: "2.4.6"
 
 dependency "preparation"
 dependency "chef"
