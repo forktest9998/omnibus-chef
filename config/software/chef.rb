@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 name "chef"
-default_version "master"
+default_version "ksubrama/win64"
 
 source git: "git://github.com/chef/chef"
 
