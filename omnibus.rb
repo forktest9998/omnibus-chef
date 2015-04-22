@@ -39,6 +39,8 @@ build_retries 3
 fetcher_retries 3
 fetcher_read_timeout 120
 
+workers 10
+
 # Load additional software
 # ------------------------------
 # software_gems ['omnibus-software', 'my-company-software']
