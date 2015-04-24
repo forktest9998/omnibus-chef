@@ -95,8 +95,9 @@ if [ "x$os" = "xAIX" ]; then
    sudo chown -R root "/opt/${OMNIBUS_PROJECT_NAME}"
    sudo chown -R root "/var/cache/omnibus"
 else
-  sudo chown -R $JENKINS_UID "/opt/${OMNIBUS_PROJECT_NAME}" || sudo chown -R jenkins "/opt/${OMNIBUS_PROJECT_NAME}"
-  sudo chown -R $JENKINS_UID "/var/cache/omnibus" || sudo chown -R jenkins "/var/cache/omnibus"
+  sudo chown -R $JENKINS_UID "/opt/${OMNIBUS_PROJECT_NAME}"
+  sudo mkdir -p /var/cache/omnibus
+  sudo chown -R $JENKINS_UID "/var/cache/omnibus"
 fi
 
 # horrible hack for solaris 9 to get ffi to compile in the bundle
