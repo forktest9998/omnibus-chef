@@ -13,6 +13,8 @@
 set -e
 set -x
 
+JENKINS_UID=$1
+
 os=`uname -s`
 
 # Return truthy (which is zero) if a command does not exist
@@ -93,8 +95,8 @@ if [ "x$os" = "xAIX" ]; then
    sudo chown -R root "/opt/${OMNIBUS_PROJECT_NAME}"
    sudo chown -R root "/var/cache/omnibus"
 else
-  sudo chown -R jenkins-node "/opt/${OMNIBUS_PROJECT_NAME}" || sudo chown -R jenkins "/opt/${OMNIBUS_PROJECT_NAME}"
-  sudo chown -R jenkins-node "/var/cache/omnibus" || sudo chown -R jenkins "/var/cache/omnibus"
+  sudo chown -R $JENKINS_UID "/opt/${OMNIBUS_PROJECT_NAME}" || sudo chown -R jenkins "/opt/${OMNIBUS_PROJECT_NAME}"
+  sudo chown -R $JENKINS_UID "/var/cache/omnibus" || sudo chown -R jenkins "/var/cache/omnibus"
 fi
 
 # horrible hack for solaris 9 to get ffi to compile in the bundle
