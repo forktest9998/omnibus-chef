@@ -16,8 +16,8 @@
 
 name "chef"
 friendly_name "Chef Client"
-maintainer "Chef Software, Inc. <maintainers@chef.io>"
-homepage "https://www.getchef.com"
+maintainer "Team Edge team-edge@fastly.com"
+homepage "fastly.com"
 
 build_iteration 1
 build_version do
@@ -61,12 +61,14 @@ override :ruby,           version: "2.1.4"
 override :'ruby-windows', version: "2.0.0-p451"
 ######
 override :rubygems,       version: "2.4.4"
+override :chef,       version: "11.2.0"
 
 dependency "preparation"
 dependency "chef"
 dependency "shebang-cleanup"
 dependency "version-manifest"
 dependency "openssl-customization"
+dependency "chef-vault"
 
 package :rpm do
   signing_passphrase ENV['OMNIBUS_RPM_SIGNING_PASSPHRASE']
