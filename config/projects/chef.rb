@@ -51,7 +51,7 @@ end
 override :cacerts, version: '2014.08.20'
 
 override :bundler,        version: "1.7.2"
-override :ruby,           version: "1.9.1"
+override :ruby,           version: "2.1.4"
 ######
 # Ruby 2.1.3 is currently not working on windows due to:
 # https://github.com/ffi/ffi/issues/375
@@ -61,7 +61,7 @@ override :ruby,           version: "1.9.1"
 override :'ruby-windows', version: "2.0.0-p451"
 ######
 override :rubygems,       version: "2.4.4"
-override :chef,       version: "11.2.0"
+override :chef,       version: "11.8.0"
 
 dependency "preparation"
 dependency "chef"
