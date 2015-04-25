@@ -35,8 +35,8 @@ s3_access_key  ENV['AWS_ACCESS_KEY_ID']
 s3_secret_key  ENV['AWS_SECRET_ACCESS_KEY']
 s3_bucket      'opscode-omnibus-cache'
 
-config.publish_s3_access_key("#{ENV['AWS_ACCESS_KEY_ID']}")
-config.publish_s3_secret_key("#{ENV['AWS_SECRET_ACCESS_KEY']}")
+publish_s3_access_key ENV['AWS_ACCESS_KEY_ID']
+publish_s3_secret_key ENV['AWS_SECRET_ACCESS_KEY']
 
 build_retries 3
 fetcher_retries 3
