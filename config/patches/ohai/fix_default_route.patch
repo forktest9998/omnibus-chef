@@ -1,0 +1,28 @@
+From 2d43bf4238d60bb3e000c01eb9bbe4911cbc14ac Mon Sep 17 00:00:00 2001
+From: Bao Nguyen <bao@fastly.com>
+Date: Thu, 30 Apr 2015 16:53:16 -0700
+Subject: [PATCH] at fastly we want default route only
+
+---
+ lib/ohai/plugins/linux/network.rb | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/lib/ohai/plugins/linux/network.rb b/lib/ohai/plugins/linux/network.rb
+index 3d80a05..bcb3d3b 100644
+--- a/lib/ohai/plugins/linux/network.rb
++++ b/lib/ohai/plugins/linux/network.rb
+@@ -200,7 +200,10 @@ Ohai.plugin(:Network) do
+         #    the routing table source field.
+         # 3) and since we're at it, let's populate some :routes attributes
+         # (going to do that for both inet and inet6 addresses)
+-        so = shell_out("ip -o -f #{family[:name]} route show")
++        #
++        # 4) At Fastly we only want the default route because the main route
++        # table has over 2millions+ routes.
++        so = shell_out("ip -o -f #{family[:name]} route show 0/0")
+         so.stdout.lines do |line|
+           line.strip!
+           Ohai::Log.debug("Parsing #{line}")
+--
+2.3.2
+
