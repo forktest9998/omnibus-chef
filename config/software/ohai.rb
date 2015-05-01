@@ -4,7 +4,7 @@
 name "ohai"
 default_version "7.4.1"
 
-source git: "git@github.com:fastly/ohai.git"
+source git: "git://github.com/fastly/ohai.git"
 
 relative_path "ohai"
 
