@@ -1,62 +1,27 @@
-From 2d43bf4238d60bb3e000c01eb9bbe4911cbc14ac Mon Sep 17 00:00:00 2001
+From ea702ecf6d843ed44ecdf1e431efa550b580316a Mon Sep 17 00:00:00 2001
 From: Bao Nguyen <bao@fastly.com>
-Date: Thu, 30 Apr 2015 16:53:16 -0700
-Subject: [PATCH 1/2] at fastly we want default route only
+Date: Fri, 1 May 2015 11:33:44 -0700
+Subject: [PATCH] fastly only want default route
 
 ---
- lib/ohai/plugins/linux/network.rb | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ lib/ohai/plugins/linux/network.rb | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
 diff --git a/lib/ohai/plugins/linux/network.rb b/lib/ohai/plugins/linux/network.rb
-index 3d80a05..bcb3d3b 100644
+index 3d80a05..2b30989 100644
 --- a/lib/ohai/plugins/linux/network.rb
 +++ b/lib/ohai/plugins/linux/network.rb
-@@ -200,7 +200,10 @@ Ohai.plugin(:Network) do
+@@ -200,7 +200,9 @@ Ohai.plugin(:Network) do
          #    the routing table source field.
          # 3) and since we're at it, let's populate some :routes attributes
          # (going to do that for both inet and inet6 addresses)
 -        so = shell_out("ip -o -f #{family[:name]} route show")
-+        #
-+        # 4) At Fastly we only want the default route because the main route
-+        # table has over 2millions+ routes.
-+        so = shell_out("ip -o -f #{family[:name]} route show 0/0")
++        # 4) At Fastly we only want to get the default route. Instead of the 2millions
++        # routes that available via the default table.
++        so = shell_out("ip -o -f #{family[:name]} route show #{family[:default_route]}")
          so.stdout.lines do |line|
            line.strip!
            Ohai::Log.debug("Parsing #{line}")
---
-2.3.2
-
-
-From a0029a98139dba1b779d08c20de7148fc114f4c3 Mon Sep 17 00:00:00 2001
-From: Bao Nguyen <bao@fastly.com>
-Date: Fri, 1 May 2015 11:17:24 -0700
-Subject: [PATCH 2/2] we'll want to collect v6 address too
-
----
- lib/ohai/plugins/linux/network.rb | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-diff --git a/lib/ohai/plugins/linux/network.rb b/lib/ohai/plugins/linux/network.rb
-index bcb3d3b..3509232 100644
---- a/lib/ohai/plugins/linux/network.rb
-+++ b/lib/ohai/plugins/linux/network.rb
-@@ -203,7 +203,15 @@ Ohai.plugin(:Network) do
-         #
-         # 4) At Fastly we only want the default route because the main route
-         # table has over 2millions+ routes.
--        so = shell_out("ip -o -f #{family[:name]} route show 0/0")
-+
-+        # making sure we both the v4 and v6 default address
-+        so = ""
-+        if family[:name] == 'inet6'
-+          so = shell_out("ip -o -f #{family[:name]} route show ::0/0")
-+        else
-+          so = shell_out("ip -o -f #{family[:name]} route show 0/0")
-+        end
-+
-         so.stdout.lines do |line|
-           line.strip!
-           Ohai::Log.debug("Parsing #{line}")
---
+-- 
 2.3.2
 
