@@ -17,10 +17,10 @@ index 3d80a05..0324059 100644
          # (going to do that for both inet and inet6 addresses)
 -        so = shell_out("ip -o -f #{family[:name]} route show")
 +        # 4) At Fastly, we want to only store and collect the default routes into Chef
-+        so = shell_out("ip -o -f #{family[:name]} route show #{family[:default_route]}")
++        so = shell_out("ip -o -f #{family[:name]} route show default")
          so.stdout.lines do |line|
            line.strip!
            Ohai::Log.debug("Parsing #{line}")
--- 
+--
 2.3.2
 
