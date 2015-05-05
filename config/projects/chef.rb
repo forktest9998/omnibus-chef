@@ -60,7 +60,7 @@ override :ruby,           version: "2.1.6"
 # override :'ruby-windows-devkit', version: "4.7.2-20130224-1151"
 override :'ruby-windows', version: "2.0.0-p451"
 ######
-override :rubygems,       version: "2.4.5"
+override :rubygems,       version: "2.4.6"
 override :chef,       version: "11.14.6"
 
 dependency "preparation"
