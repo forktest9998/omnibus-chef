@@ -1,12 +1,12 @@
 GIT
   remote: git://github.com/opscode/omnibus-software.git
-  revision: 4ca326c4ea5dadbd32c700ff3c31cb8b63a9977b
+  revision: 4c7d963f222e21b77d02da692548e9f5e8996c6e
   specs:
     omnibus-software (4.0.0)
 
 GIT
   remote: git://github.com/opscode/omnibus.git
-  revision: 09e418fb7f49f64586056610da4aa0993d4f937f
+  revision: c795b65bc796629c4e5b97ce21185b553caaf7e9
   specs:
     omnibus (4.0.0)
       chef-sugar (~> 3.0)
@@ -22,7 +22,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     addressable (2.3.8)
-    berkshelf (3.2.3)
+    berkshelf (3.2.4)
       addressable (~> 2.3.4)
       berkshelf-api-client (~> 1.2)
       buff-config (~> 1.0)
@@ -78,8 +78,8 @@ GEM
     httpclient (2.6.0.1)
     ipaddress (0.8.0)
     json (1.8.2)
-    kitchen-vagrant (0.17.0.rc.1)
-      test-kitchen (~> 1.4.0.rc.1)
+    kitchen-vagrant (0.17.0)
+      test-kitchen (~> 1.4)
     libyajl2 (1.2.0)
     little-plugger (1.1.3)
     logging (1.8.2)
@@ -148,7 +148,7 @@ GEM
       dep_selector (~> 1.0)
       semverse (~> 1.1)
     systemu (2.6.5)
-    test-kitchen (1.4.0.rc.1)
+    test-kitchen (1.4.0)
       mixlib-shellout (>= 1.2, < 3.0)
       net-scp (~> 1.1)
       net-ssh (~> 2.7)
@@ -171,7 +171,7 @@ GEM
     windows-pr (1.2.4)
       win32-api (>= 1.4.5)
       windows-api (>= 0.4.0)
-    winrm (1.3.2)
+    winrm (1.3.3)
       builder (>= 2.1.2)
       gssapi (~> 1.2)
       gyoku (~> 1.0)
@@ -190,9 +190,9 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
-  berkshelf (~> 3.0)
-  kitchen-vagrant (~> 0.17.0.rc.1)
+  berkshelf (~> 3.2.4)
+  kitchen-vagrant (~> 0.17.0)
   omnibus!
   omnibus-software!
-  test-kitchen (~> 1.4.0.rc.1)
+  test-kitchen (~> 1.4.0)
   winrm-transport (~> 1.0)
