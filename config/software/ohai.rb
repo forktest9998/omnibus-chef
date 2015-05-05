@@ -2,7 +2,7 @@
 # Copyright:: Copyright (c) 2015 - Fastly Inc.
 
 name "ohai"
-default_version "7.4.1"
+default_version "7.2.4"
 
 source git: "git://github.com/fastly/ohai.git"
 
