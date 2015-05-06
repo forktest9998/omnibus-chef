@@ -9,10 +9,10 @@ gem 'omnibus-software', github: 'opscode/omnibus-software'
 # by running `bundle install --without development` to speed up build times.
 group :development do
   # Use Berkshelf for resolving cookbook dependencies
-  gem 'berkshelf', '~> 3.0'
+  gem 'berkshelf', '~> 3.2.4'
 
   # Use Test Kitchen with Vagrant for converging the build environment
-  gem 'test-kitchen',    '~> 1.4.0.rc.1'
-  gem 'kitchen-vagrant', '~> 0.17.0.rc.1'
+  gem 'test-kitchen',    '~> 1.4.0'
+  gem 'kitchen-vagrant', '~> 0.17.0'
   gem 'winrm-transport', '~> 1.0'
 end

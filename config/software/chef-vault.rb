@@ -15,7 +15,7 @@
 #
 
 name "chef-vault"
-default_version "v2.2.4"
+default_version "v2.5.0"
 
 source git: "git://github.com/Nordstrom/chef-vault.git"
 
