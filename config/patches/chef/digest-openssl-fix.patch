@@ -1,0 +1,89 @@
+diff --git lib/chef/chef_fs/file_system/cookbook_file.rb lib/chef/chef_fs/file_system/cookbook_file.rb
+index 7868322..16203b7 100644
+--- lib/chef/chef_fs/file_system/cookbook_file.rb
++++ lib/chef/chef_fs/file_system/cookbook_file.rb
+@@ -18,7 +18,7 @@
+ 
+ require 'chef/chef_fs/file_system/base_fs_object'
+ require 'chef/http/simple'
+-require 'digest/md5'
++require 'openssl'
+ 
+ class Chef
+   module ChefFS
+@@ -74,7 +74,7 @@ class Chef
+         private
+ 
+         def calc_checksum(value)
+-          Digest::MD5.hexdigest(value)
++          OpenSSL::Digest::MD5.hexdigest(value)
+         end
+       end
+     end
+diff --git lib/chef/digester.rb lib/chef/digester.rb
+index 669ff8b..0b83390 100644
+--- lib/chef/digester.rb
++++ lib/chef/digester.rb
+@@ -18,7 +18,7 @@
+ # limitations under the License.
+ #
+ 
+-require 'digest'
++require 'openssl'
+ 
+ class Chef
+   class Digester
+@@ -40,7 +40,7 @@ class Chef
+     end
+ 
+     def generate_checksum(file)
+-      checksum_file(file, Digest::SHA256.new)
++      checksum_file(file, OpenSSL::Digest::SHA256.new)
+     end
+ 
+     def self.generate_md5_checksum_for_file(*args)
+@@ -48,11 +48,11 @@ class Chef
+     end
+ 
+     def generate_md5_checksum_for_file(file)
+-      checksum_file(file, Digest::MD5.new)
++      checksum_file(file, OpenSSL::Digest::MD5.new)
+     end
+ 
+     def generate_md5_checksum(io)
+-      checksum_io(io, Digest::MD5.new)
++      checksum_io(io, OpenSSL::Digest::MD5.new)
+     end
+ 
+     private
+diff --git lib/chef/encrypted_data_bag_item/decryptor.rb lib/chef/encrypted_data_bag_item/decryptor.rb
+index 503a8f3..85884e3 100644
+--- lib/chef/encrypted_data_bag_item/decryptor.rb
++++ lib/chef/encrypted_data_bag_item/decryptor.rb
+@@ -151,7 +151,7 @@ class Chef::EncryptedDataBagItem
+           assert_valid_cipher!
+           d = OpenSSL::Cipher::Cipher.new(ALGORITHM)
+           d.decrypt
+-          d.key = Digest::SHA256.digest(key)
++          d.key = OpenSSL::Digest::SHA256.digest(key)
+           d.iv = iv
+           d
+         end
+diff --git lib/chef/encrypted_data_bag_item/encryptor.rb lib/chef/encrypted_data_bag_item/encryptor.rb
+index 9686e84..e58f586 100644
+--- lib/chef/encrypted_data_bag_item/encryptor.rb
++++ lib/chef/encrypted_data_bag_item/encryptor.rb
+@@ -90,9 +90,12 @@ class Chef::EncryptedDataBagItem
+         @openssl_encryptor ||= begin
+           encryptor = OpenSSL::Cipher::Cipher.new(ALGORITHM)
+           encryptor.encrypt
++          # We must set key before iv: https://bugs.ruby-lang.org/issues/8221
++          # adapted from
++          # https://github.com/chef/chef/commit/d5f16cf0b9f35cbdff52ab83c221666e6843287e#diff-cbc32adbcc383fde08a4677ab3f8d1b6R106
++          encryptor.key = OpenSSL::Digest::SHA256.digest(key)
+           @iv ||= encryptor.random_iv
+           encryptor.iv = @iv
+-          encryptor.key = Digest::SHA256.digest(key)
+           encryptor
+         end
+       end
