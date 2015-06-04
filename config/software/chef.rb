@@ -61,10 +61,6 @@ build do
 
     bundle "install --without server docgen", env: env
 
-    # Install components that live inside Chef's git repo. For now this is just
-    # 'chef-config'
-    bundle "exec rake install_components", env: env
-
     gem "build chef-{windows,x86-mingw32}.gemspec", env: env
 
     gem "install chef*mingw32.gem" \
