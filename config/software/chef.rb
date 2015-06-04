@@ -81,10 +81,6 @@ build do
     # custom patch to replace Digest with Openssl
     patch  source: 'digest_openssl_fix.patch'
 
-    # Install components that live inside Chef's git repo. For now this is just
-    # 'chef-config'
-    bundle "exec rake install_components", env: env
-
     gem "build chef.gemspec", env: env
 
     # Don't use -n #{install_dir}/bin. Appbundler will take care of them later
