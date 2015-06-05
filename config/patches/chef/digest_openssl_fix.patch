@@ -1,0 +1,116 @@
+From 184c0e9200c84b4471941c3bebf1d5ec78690bf5 Mon Sep 17 00:00:00 2001
+From: Bao Nguyen <bao@fastly.com>
+Date: Thu, 4 Jun 2015 16:01:52 -0700
+Subject: [PATCH] Patch Chef to use Openssl instead of Digest @macros notice
+ 33% failure rate on Chef 11.18.12 on development nodes due to
+ https://github.com/chef/chef/issues/1793
+
+Opscode merged this
+https://github.com/chef/chef/commit/d5f16cf0b9f35cbdff52ab83c221666e6843287e
+into mainstream on Chef 12.
+
+This is an attempt to backport this fix into our 11.18.12 so that we
+don't run into this same racy condition with Digest by switching over to
+use Openssl library.
+
+Also incorporate fix https://bugs.ruby-lang.org/issues/8221 by generating
+key before iv, this is a required fix before Ruby 2.2.0, our current is
+2.1.6
+---
+ lib/chef/chef_fs/file_system/cookbook_file.rb | 4 ++--
+ lib/chef/digester.rb                          | 8 ++++----
+ lib/chef/encrypted_data_bag_item/decryptor.rb | 2 +-
+ lib/chef/encrypted_data_bag_item/encryptor.rb | 5 ++++-
+ 4 files changed, 11 insertions(+), 8 deletions(-)
+
+diff --git a/lib/chef/chef_fs/file_system/cookbook_file.rb b/lib/chef/chef_fs/file_system/cookbook_file.rb
+index 7868322..16203b7 100644
+--- a/lib/chef/chef_fs/file_system/cookbook_file.rb
++++ b/lib/chef/chef_fs/file_system/cookbook_file.rb
+@@ -18,7 +18,7 @@
+ 
+ require 'chef/chef_fs/file_system/base_fs_object'
+ require 'chef/http/simple'
+-require 'digest/md5'
++require 'openssl'
+ 
+ class Chef
+   module ChefFS
+@@ -74,7 +74,7 @@ class Chef
+         private
+ 
+         def calc_checksum(value)
+-          Digest::MD5.hexdigest(value)
++          OpenSSL::Digest::MD5.hexdigest(value)
+         end
+       end
+     end
+diff --git a/lib/chef/digester.rb b/lib/chef/digester.rb
+index 669ff8b..0b83390 100644
+--- a/lib/chef/digester.rb
++++ b/lib/chef/digester.rb
+@@ -18,7 +18,7 @@
+ # limitations under the License.
+ #
+ 
+-require 'digest'
++require 'openssl'
+ 
+ class Chef
+   class Digester
+@@ -40,7 +40,7 @@ class Chef
+     end
+ 
+     def generate_checksum(file)
+-      checksum_file(file, Digest::SHA256.new)
++      checksum_file(file, OpenSSL::Digest::SHA256.new)
+     end
+ 
+     def self.generate_md5_checksum_for_file(*args)
+@@ -48,11 +48,11 @@ class Chef
+     end
+ 
+     def generate_md5_checksum_for_file(file)
+-      checksum_file(file, Digest::MD5.new)
++      checksum_file(file, OpenSSL::Digest::MD5.new)
+     end
+ 
+     def generate_md5_checksum(io)
+-      checksum_io(io, Digest::MD5.new)
++      checksum_io(io, OpenSSL::Digest::MD5.new)
+     end
+ 
+     private
+diff --git a/lib/chef/encrypted_data_bag_item/decryptor.rb b/lib/chef/encrypted_data_bag_item/decryptor.rb
+index 503a8f3..85884e3 100644
+--- a/lib/chef/encrypted_data_bag_item/decryptor.rb
++++ b/lib/chef/encrypted_data_bag_item/decryptor.rb
+@@ -151,7 +151,7 @@ class Chef::EncryptedDataBagItem
+           assert_valid_cipher!
+           d = OpenSSL::Cipher::Cipher.new(ALGORITHM)
+           d.decrypt
+-          d.key = Digest::SHA256.digest(key)
++          d.key = OpenSSL::Digest::SHA256.digest(key)
+           d.iv = iv
+           d
+         end
+diff --git a/lib/chef/encrypted_data_bag_item/encryptor.rb b/lib/chef/encrypted_data_bag_item/encryptor.rb
+index 9686e84..e58f586 100644
+--- a/lib/chef/encrypted_data_bag_item/encryptor.rb
++++ b/lib/chef/encrypted_data_bag_item/encryptor.rb
+@@ -90,9 +90,12 @@ class Chef::EncryptedDataBagItem
+         @openssl_encryptor ||= begin
+           encryptor = OpenSSL::Cipher::Cipher.new(ALGORITHM)
+           encryptor.encrypt
++          # We must set key before iv: https://bugs.ruby-lang.org/issues/8221
++          # adapted from
++          # https://github.com/chef/chef/commit/d5f16cf0b9f35cbdff52ab83c221666e6843287e#diff-cbc32adbcc383fde08a4677ab3f8d1b6R106
++          encryptor.key = OpenSSL::Digest::SHA256.digest(key)
+           @iv ||= encryptor.random_iv
+           encryptor.iv = @iv
+-          encryptor.key = Digest::SHA256.digest(key)
+           encryptor
+         end
+       end
+--
+2.4.0
